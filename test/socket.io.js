@@ -206,6 +206,7 @@ describe('socket.io', function(){
       request.get('http://localhost:54013/socket.io/default/')
        .query({ transport: 'polling' })
        .end(function (err, res) {
+        // Uncaught Error: expected 200 to equal 400
           expect(res.status).to.be(400);
           done();
         });
