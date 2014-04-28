@@ -95,7 +95,7 @@ describe('socket.io', function(){
       });
     });
 
-    it.only('should be able to set authorization and succeed', function(done) {
+    it('should be able to set authorization and succeed', function(done) {
       var httpSrv = http();
       var srv = io(httpSrv, { resource: 'node/socket.io'});
       srv.set('authorization', function(o, f) { f(null, true); });
