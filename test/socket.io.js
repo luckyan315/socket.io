@@ -15,7 +15,8 @@ function client(srv, nsp, opts){
   }
   var addr = srv.address();
   if (!addr) addr = srv.listen().address();
-  var url = 'ws://' + addr.address + ':' + addr.port + (nsp || '');
+  // Fix: Error: expected '{"code":0,"message":"Transport unknown"}
+  var url = 'ws://' + addr.address + ':' + addr.port + (nsp || '') + '/?transport=websocket';
 
   //v0.9.16 need to use ioc.connect to got the client socket.
   return ioc.connect(url, opts);
