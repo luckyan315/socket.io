@@ -27,6 +27,7 @@ describe('socket.io', function(){
     expect(version).to.be(require('socket.io-client/package').version);
   });
 
+  // cp -r ./node_modules/socket.io-parser ./node_modules/socket.io-client/node_modules/socket.io-parser
   it('should have the same protocol version as client', function() {
     var pversion = require('socket.io-parser').protocol;
     var cparser = require('socket.io-client/node_modules/socket.io-parser');
