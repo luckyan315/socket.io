@@ -82,7 +82,7 @@ describe('socket.io', function(){
       srv.set('authorization', function(o, f) { f(null, false); });
 
       // 
-      var socket = client(httpSrv, null, {resource: 'node/socket.io'});
+      var socket = client(httpSrv, {resource: 'node/socket.io'});
       socket.on('connect', function(){
         expect().fail();
       });
