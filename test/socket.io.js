@@ -16,7 +16,9 @@ function client(srv, nsp, opts){
   var addr = srv.address();
   if (!addr) addr = srv.listen().address();
   var url = 'ws://' + addr.address + ':' + addr.port + (nsp || '');
-  return ioc(url, opts);
+
+  //v0.9.16 need to use ioc.connect to got the client socket.
+  return ioc.connect(url, opts);
 }
 
 describe('socket.io', function(){
