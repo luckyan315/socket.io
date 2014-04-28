@@ -16,6 +16,7 @@ function client(srv, nsp, opts){
   var addr = srv.address();
   if (!addr) addr = srv.listen().address();
   // Fix: Error: expected '{"code":0,"message":"Transport unknown"}
+  // Fix: req.websocket will not be assigned if tranport=websocket (engine.io/lib/server.js, L285)
   var url = 'ws://' + addr.address + ':' + addr.port + (nsp || '') + '/?transport=polling';
 
   //v0.9.16 need to use ioc.connect to got the client socket.
@@ -77,10 +78,11 @@ describe('socket.io', function(){
 
     it.only('should be able to set authorization and send error packet', function(done) {
       var httpSrv = http();
-      var srv = io(httpSrv, { allowUpgrades: true });
+      var srv = io(httpSrv, { allowUpgrades: true});
       srv.set('authorization', function(o, f) { f(null, false); });
 
-      var socket = client(httpSrv);
+      // 
+      var socket = client(httpSrv, null, {resource: 'node/socket.io'});
       socket.on('connect', function(){
         expect().fail();
       });
