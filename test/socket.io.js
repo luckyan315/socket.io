@@ -17,7 +17,7 @@ function client(srv, nsp, opts){
   if (!addr) addr = srv.listen().address();
   // Fix: Error: expected '{"code":0,"message":"Transport unknown"}
   // Fix: req.websocket will not be assigned if tranport=websocket (engine.io/lib/server.js, L285)
-  var url = 'ws://' + addr.address + ':' + addr.port + (nsp || '') + '/?transport=polling';
+  var url = 'ws://' + addr.address + ':' + addr.port + (nsp || '') + '/?transport=websocket';
 
   //v0.9.16 need to use ioc.connect to got the client socket.
   return ioc.connect(url, opts);
@@ -77,15 +77,14 @@ describe('socket.io', function(){
     });
 
     // todo: failed (timeout of 5000ms exceeded)
-    it.skip('should be able to set authorization and send error packet', function(done) {
-      // this.timeout(5000);
-
+    it.only('should be able to set authorization and send error packet', function(done) {
       var httpSrv = http();
-      var srv = io(httpSrv, { allowUpgrades: false});
+      var srv = io(httpSrv);
       srv.set('authorization', function(o, f) { f(null, false); });
+      srv.set('transports', ['websocket']);
 
       // 
-      var socket = client(httpSrv, { resource: 'node/socket.io'});
+      var socket = client(httpSrv);
       socket.on('connect', function(){
         expect().fail();
       });
@@ -99,7 +98,7 @@ describe('socket.io', function(){
       var httpSrv = http();
       var srv = io(httpSrv, { resource: 'node/socket.io'});
       srv.set('authorization', function(o, f) { f(null, true); });
-
+  
       srv.on('connection', function(s) {
         s.on('yoyo', function(data) {
           expect(data).to.be('data');
