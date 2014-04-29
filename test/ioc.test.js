@@ -53,7 +53,26 @@ describe.only('socket.io.pre2', function(){
     socket.on('error', function(err){
       expect(err).to.be('Not authorized');
       done();
-    })
-
+    });
   });
+
+  describe('server attachment', function(){
+    it('should work with #attach', function(done){
+      var httpServer = http();
+      var sockets = io();
+      sockets.attach(httpServer);
+      request(httpServer)
+      .get('/socket.io/socket.io.js')
+      .end(function(err, res){
+        if (err) return done(err);
+        expect(res.status).to.be(200);
+        done();
+      });
+
+    }); 
+  });
+
+  
 });
+
+
