@@ -72,7 +72,22 @@ describe.only('socket.io.pre2', function(){
     }); 
   });
 
-  
+  describe('listen port', function(){
+    it('should bind a port', function(done){
+      var sockets = io(1987);
+      request('http://localhost:1987')
+      .get('/socket.io/socket.io.js')
+      .expect(200, done);
+
+    });
+
+    it('should bind a port with listen', function(done){
+      var sockets = io().listen(1988);
+      request('http://localhost:1987')
+      .get('/socket.io/socket.io.js')
+      .expect(200, done);
+    })
+  })
 });
 
 
