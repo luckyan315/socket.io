@@ -5,7 +5,7 @@ var request = require('supertest');
 var expect = require('expect.js');
 require('should');
 
-describe.only('socket.io.pre2', function(){
+describe('socket.io.pre2', function(){
 
   it('should able to set ping interval', function(){
     var server = io(http());
@@ -87,7 +87,42 @@ describe.only('socket.io.pre2', function(){
       .get('/socket.io/socket.io.js')
       .expect(200, done);
     })
-  })
+  });
+
+  describe.only('middleware', function(){
+    it('should visit middelwares ', function(){
+      var srv =  http();
+      var sio = io(srv);
+      var nTimes =  0;
+
+      sio.use(function(client, next){
+        // console.log('enter 1st middleware');
+        nTimes++;
+        next();
+      });
+
+      sio.use(function(client, next){
+        // console.log('enter 2nd middleware');
+        nTimes++;
+        next();
+      });
+
+      var addr = srv.listen().address();
+      var url = 'ws://' + addr.address + ':' + addr.port;
+      var socket = ioc(url);
+
+      socket.on('connect', function(){
+        // console.log('socket connected!!!!! ' + 'nTimes: ' + nTimes)
+        socket.emit('angl', 'wkrldi');
+
+        expect(nTimes).to.be(2);
+      });
+      socket.on('error', function(err){
+        expect(err).to.be('Not authorized');
+        expect.fail();
+      });
+    });
+  });
 });
 
 
