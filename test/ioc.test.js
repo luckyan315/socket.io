@@ -89,7 +89,7 @@ describe('socket.io.pre2', function(){
     })
   });
 
-  describe.only('middleware', function(){
+  describe('middleware', function(){
     it('should visit middelwares ', function(){
       var srv =  http();
       var sio = io(srv);
@@ -109,20 +109,56 @@ describe('socket.io.pre2', function(){
 
       var addr = srv.listen().address();
       var url = 'ws://' + addr.address + ':' + addr.port;
-      var socket = ioc(url);
+      var sockets = ioc(url);
 
-      socket.on('connect', function(){
+      sockets.on('connect', function(){
         // console.log('socket connected!!!!! ' + 'nTimes: ' + nTimes)
-        socket.emit('angl', 'wkrldi');
+        sockets.emit('angl', 'wkrldi');
 
         expect(nTimes).to.be(2);
       });
-      socket.on('error', function(err){
+      sockets.on('error', function(err){
         expect(err).to.be('Not authorized');
         expect.fail();
       });
     });
   });
+
+  describe('namespace', function(){
+    var Namespace = require('../lib/namespace');
+
+    describe('Default', function(){
+      it('should be accessable through .sockets', function(){
+        var sio = io();
+        expect(sio.sockets).to.be.a(Namespace);
+      });
+
+      it('should recv connect and connection evnet', function(done){
+        var srv = http();
+        var sio = io(srv);
+
+        srv.listen(function(){
+          var addr = srv.address();
+          var url = 'ws://' + addr.address + ':' + addr.port;
+          var sockets = ioc(url);
+
+          // sockets.on('connect', function(socket){
+          //   console.log('recv [connect] evnet!!!!');
+          //   done();
+          // });
+
+          sockets.on('connection', function(socket){
+            console.log('recv [connection] event!!!!!');
+            done();
+          })
+        })
+      });
+
+    });
+  });
+
+
+
 });
 
 
